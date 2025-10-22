@@ -501,6 +501,11 @@ body {
   gap: 16px;
   align-items: center;
 }
+.chart-container {
+  width: 100px;
+  height: 40px;
+  position: relative;
+}
 .input {
   width: 100%;
   padding: 16px 120px 16px 20px;

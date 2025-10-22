@@ -79,15 +79,13 @@
         </div>
       </div>
       <div class="system-stats-container">
-        <div id="system-stats" style="display: flex; align-items: center; gap: 15px;">
-          <div style="text-align: center;">
-            <canvas id="cpuChart" width="100" height="40"></canvas>
-            <div style="font-size: 12px; color: var(--text-secondary);">CPU</div>
-          </div>
-          <div style="text-align: center;">
-            <canvas id="memChart" width="100" height="40"></canvas>
-            <div style="font-size: 12px; color: var(--text-secondary);">Memory</div>
-          </div>
+        <div class="chart-container">
+          <canvas id="cpuChart"></canvas>
+          <div style="font-size: 12px; color: var(--text-secondary); text-align: center;">CPU</div>
+        </div>
+        <div class="chart-container">
+          <canvas id="memChart"></canvas>
+          <div style="font-size: 12px; color: var(--text-secondary); text-align: center;">Memory</div>
         </div>
       </div>
     </div>
