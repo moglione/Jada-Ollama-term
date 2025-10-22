@@ -1,21 +1,21 @@
 :root {
-  --bg-primary: #0f0f23;
-  --bg-secondary: #1a1a2e;
-  --bg-tertiary: #16213e;
-  --text-primary: #e6e6e6;
-  --text-secondary: #a0a0a0;
-  --accent: #00d4aa;
-  --accent-hover: #00b894;
-  --border: #2d3748;
-  --error: #e53e3e;
-  --warning: #ed8936;
-  --success: #38a169;
-  --code-bg: #1a202c;
-  --message-user: #2d3748;
-  --message-assistant: #1a202c;
-  --thought-bg: #282c3a; /* Slightly different background for thought */
-  --thought-border: #3a4051;
-  --thought-text: var(--text-secondary);
+  --bg-primary: #000000;
+  --bg-secondary: #0a0a0a;
+  --bg-tertiary: #141414;
+  --text-primary: #00ff00;
+  --text-secondary: #00cc00;
+  --accent: #00ff00;
+  --accent-hover: #00cc00;
+  --border: #00ff00;
+  --error: #ff0000;
+  --warning: #ffff00;
+  --success: #00ff00;
+  --code-bg: #141414;
+  --message-user: #141414;
+  --message-assistant: #0a0a0a;
+  --thought-bg: #141414;
+  --thought-border: #00ff00;
+  --thought-text: #00cc00;
 }
 [data-theme="light"] {
   --bg-primary: #ffffff;

@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="styles.css">
   <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.5.0/chart.umd.min.js"></script>
 </head>
 <body>
   <div class="overlay" id="overlay"></div>
@@ -49,6 +50,16 @@
       </select>
     </div>
     <div class="header-right">
+      <div id="system-stats" style="display: flex; align-items: center; gap: 15px;">
+        <div style="text-align: center;">
+          <canvas id="cpuChart" width="100" height="40"></canvas>
+          <div style="font-size: 12px; color: var(--text-secondary);">CPU</div>
+        </div>
+        <div style="text-align: center;">
+          <canvas id="memChart" width="100" height="40"></canvas>
+          <div style="font-size: 12px; color: var(--text-secondary);">Memory</div>
+        </div>
+      </div>
       <div class="status">
         <div id="dot" class="status-dot"></div>
         <div id="statustext">Checking…</div>

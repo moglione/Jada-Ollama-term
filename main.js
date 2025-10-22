@@ -17,6 +17,8 @@ let currentChatId = null;
 let currentStreamingMessage = null; // Track current streaming message
 let streamingContent = ''; // Store streaming content
 let streamingThought = ''; // Store streaming thought content
+let cpuChart, memChart;
+const chartDataPoints = 100;
 
 (async () => {
   loadTheme();
@@ -25,8 +27,77 @@ let streamingThought = ''; // Store streaming thought content
   await loadModels();
   loadChatHistory();
   setupInputHandlers();
+  initCharts();
   setInterval(checkStatus, 30000);
+  setInterval(updateSystemStats, 2000); // Update stats every 2 seconds
 })();
+
+function initCharts() {
+  const chartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: { enabled: false }
+    },
+    scales: {
+      x: { display: false },
+      y: {
+        display: false,
+        beginAtZero: true,
+        max: 100
+      }
+    },
+    elements: {
+      point: { radius: 0 },
+      line: {
+        tension: 0.4,
+        borderWidth: 2,
+        borderColor: 'var(--accent)'
+      }
+    },
+    animation: { duration: 250 }
+  };
+
+  const initialData = {
+    labels: Array(chartDataPoints).fill(''),
+    datasets: [{
+      data: Array(chartDataPoints).fill(0),
+      fill: true,
+      backgroundColor: 'rgba(0, 255, 0, 0.1)'
+    }]
+  };
+
+  const cpuCtx = document.getElementById('cpuChart').getContext('2d');
+  const memCtx = document.getElementById('memChart').getContext('2d');
+
+  cpuChart = new Chart(cpuCtx, { type: 'line', data: JSON.parse(JSON.stringify(initialData)), options: chartOptions });
+  memChart = new Chart(memCtx, { type: 'line', data: JSON.parse(JSON.stringify(initialData)), options: chartOptions });
+}
+
+async function updateSystemStats() {
+  try {
+    const response = await fetch('system_stats.php');
+    if (!response.ok) return;
+    const stats = await response.json();
+
+    if (stats.cpu !== null) {
+      const cpuData = cpuChart.data.datasets[0].data;
+      cpuData.push(stats.cpu);
+      if (cpuData.length > chartDataPoints) cpuData.shift();
+      cpuChart.update();
+    }
+
+    if (stats.memory !== null) {
+      const memData = memChart.data.datasets[0].data;
+      memData.push(stats.memory);
+      if (memData.length > chartDataPoints) memData.shift();
+      memChart.update();
+    }
+  } catch (error) {
+    // console.error('Error fetching system stats:', error);
+  }
+}
 
 function toggleMemory() {
   memoryEnabled = !memoryEnabled;
