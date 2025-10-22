@@ -25,7 +25,7 @@ const chartDataPoints = 100;
   await loadModels();
   loadChatHistory();
   initCharts();
-  createNewTerminalInput(); // Initial input line
+  setupInputHandlers(); // Setup handlers for the initial input
   setInterval(checkStatus, 30000);
   setInterval(updateSystemStats, 2000); // Update stats every 2 seconds
 })();
@@ -113,27 +113,32 @@ function updateMemoryStatus() {
   }
 }
 
+function setupInputHandlers() {
+  const input = document.getElementById('inp');
+  if (input) {
+    input.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
+      }
+    });
+  }
+}
+
 function createNewTerminalInput() {
   const terminalLine = document.createElement('div');
   terminalLine.className = 'terminal-input-line';
-
-  const input = document.createElement('input');
-  input.type = 'text';
-  input.className = 'terminal-input';
-  input.id = 'inp'; // Keep id for focusing
-  input.placeholder = currentModel ? `Chat with ${currentModel}...` : 'Select a model to start chatting...';
-  input.disabled = !currentModel;
-
-  const cursor = document.createElement('span');
-  cursor.className = 'terminal-cursor';
-
-  terminalLine.appendChild(input);
-  terminalLine.appendChild(cursor);
+  terminalLine.innerHTML = `
+    <span class="prompt">></span>
+    <input type="text" id="inp" class="terminal-input" autocomplete="off" autofocus>
+    <span class="terminal-cursor"></span>
+  `;
   msgs.appendChild(terminalLine);
 
-  input.focus();
+  const newInput = document.getElementById('inp');
+  newInput.focus();
 
-  input.addEventListener('keydown', function(e) {
+  newInput.addEventListener('keydown', function(e) {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       sendMessage();

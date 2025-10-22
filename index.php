@@ -69,7 +69,11 @@
   </div>
   <div class="chat">
     <div id="msgs" class="messages">
-      <!-- Terminal input will be dynamically added here -->
+      <div class="terminal-input-line">
+        <span class="prompt">></span>
+        <input type="text" id="inp" class="terminal-input" autocomplete="off" autofocus>
+        <span class="terminal-cursor"></span>
+      </div>
     </div>
   </div>
   <footer class="footer">
