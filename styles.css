@@ -83,6 +83,10 @@ body {
   align-items: center;
   gap: 12px;
 }
+.system-stats-container {
+  max-height: 50px; /* Constrain the height */
+  overflow: hidden;   /* Hide any overflow */
+}
 .status {
   display: flex;
   align-items: center;
