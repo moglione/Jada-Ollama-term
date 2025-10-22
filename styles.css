@@ -83,10 +83,6 @@ body {
   align-items: center;
   gap: 12px;
 }
-.system-stats-container {
-  max-height: 50px; /* Constrain the height */
-  overflow: hidden;   /* Hide any overflow */
-}
 .status {
   display: flex;
   align-items: center;
@@ -503,11 +499,20 @@ body {
   padding: 16px 24px;
   background: var(--bg-secondary);
   border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 .input-wrapper {
   position: relative;
-  max-width: 900px;
-  margin: 0 auto;
+  flex-grow: 1;
+}
+.system-stats-container {
+  display: flex;
+  gap: 16px;
+  align-items: center;
 }
 .input {
   width: 100%;
