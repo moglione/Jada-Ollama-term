@@ -129,7 +129,7 @@ function createNewTerminalInput() {
   const terminalLine = document.createElement('div');
   terminalLine.className = 'terminal-input-line';
   terminalLine.innerHTML = `
-    <span class="prompt">></span>
+    <span class="prompt">> </span>
     <input type="text" id="inp" class="terminal-input" autocomplete="off" autofocus>
     <span class="terminal-cursor"></span>
   `;
@@ -463,13 +463,19 @@ modelSel.addEventListener('change', function() {
     return;
   }
   currentModel = this.value;
-  const currentInput = document.getElementById('inp');
-  if (currentInput) {
-    currentInput.disabled = !currentModel;
-    currentInput.placeholder = currentModel ? `Chat with ${currentModel}...` : 'Select a model to start chatting...';
-    currentInput.focus();
-  }
+  setChatEnabled(!!currentModel);
 });
+
+function setChatEnabled(enabled) {
+  const input = document.getElementById('inp');
+  if (input) {
+    input.disabled = !enabled || isTyping;
+    if (!isTyping) {
+      input.placeholder = enabled ? `Chat with ${currentModel}...` : 'Select a model to start chatting...';
+      input.focus();
+    }
+  }
+}
 
 async function sendMessage() {
   const inputElement = document.getElementById('inp');
@@ -480,13 +486,17 @@ async function sendMessage() {
 
   // Convert the input line to a static message
   const terminalLine = inputElement.parentElement;
-  terminalLine.remove();
-  appendMessage('user', text);
+  terminalLine.innerHTML = `<span class="prompt">></span> <span class="text">${text}</span>`;
+  terminalLine.classList.remove('terminal-input-line');
+  terminalLine.classList.add('message', 'user');
 
   currentChat.push({ role: 'user', content: text });
   
   // Create empty assistant message for live streaming
   currentStreamingMessage = createStreamingMessage();
+
+  // Add a new input line immediately
+  createNewTerminalInput();
   streamingContent = '';
   streamingThought = '';
   
@@ -789,8 +799,6 @@ function finishStreamingMessage() {
   currentStreamingMessage = null;
   streamingContent = '';
   streamingThought = '';
-
-  createNewTerminalInput(); // Add new input line for the next command
 }
 
 function removeStreamingMessage() {

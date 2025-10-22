@@ -166,9 +166,10 @@ body {
   border-radius: 0;
   border: none;
 }
-.message.user .message-content::before {
-  content: '> ';
+.message.user .prompt, .terminal-input-line .prompt {
   font-weight: bold;
+  white-space: pre;
+  margin-right: 8px;
 }
 .message.assistant .message-content {
   padding: 0;
