@@ -68,28 +68,22 @@
     </div>
   </div>
   <div class="chat">
-    <div id="msgs" class="messages"></div>
-    <div class="input-area">
-      <div class="input-wrapper">
-        <textarea id="inp" class="input" placeholder="Select a model above to start chatting..." disabled rows="1"></textarea>
-        <div class="input-actions">
-          <button id="btn" class="action-btn" title="Send Message" disabled>
-            <i class="fas fa-paper-plane"></i>
-          </button>
-        </div>
-      </div>
-      <div class="system-stats-container">
-        <div class="chart-container">
-          <canvas id="cpuChart"></canvas>
-          <div style="font-size: 12px; color: var(--text-secondary); text-align: center;">CPU</div>
-        </div>
-        <div class="chart-container">
-          <canvas id="memChart"></canvas>
-          <div style="font-size: 12px; color: var(--text-secondary); text-align: center;">Memory</div>
-        </div>
-      </div>
+    <div id="msgs" class="messages">
+      <!-- Terminal input will be dynamically added here -->
     </div>
   </div>
+  <footer class="footer">
+    <div class="system-stats-container">
+      <div class="chart-container">
+        <canvas id="cpuChart"></canvas>
+        <div style="font-size: 12px; color: var(--text-secondary); text-align: center;">CPU</div>
+      </div>
+      <div class="chart-container">
+        <canvas id="memChart"></canvas>
+        <div style="font-size: 12px; color: var(--text-secondary); text-align: center;">Memory</div>
+      </div>
+    </div>
+  </footer>
   <div id="previewWindow" class="preview-window">
     <div class="preview-header">
       <h3 class="preview-title">Code Preview</h3>

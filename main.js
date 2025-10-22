@@ -2,8 +2,6 @@ const modelSel = document.getElementById('model');
 const dot = document.getElementById('dot');
 const stat = document.getElementById('statustext');
 const msgs = document.getElementById('msgs');
-const inp = document.getElementById('inp');
-const btn = document.getElementById('btn');
 const sidebar = document.getElementById('sidebar');
 const overlay = document.getElementById('overlay');
 const themeIcon = document.getElementById('themeIcon');
@@ -26,8 +24,8 @@ const chartDataPoints = 100;
   await checkStatus();
   await loadModels();
   loadChatHistory();
-  setupInputHandlers();
   initCharts();
+  createNewTerminalInput(); // Initial input line
   setInterval(checkStatus, 30000);
   setInterval(updateSystemStats, 2000); // Update stats every 2 seconds
 })();
@@ -53,7 +51,7 @@ function initCharts() {
       line: {
         tension: 0.4,
         borderWidth: 2,
-        borderColor: 'var(--accent)'
+        borderColor: '#00ff00' // Brighter green
       }
     },
     animation: { duration: 250 }
@@ -64,7 +62,7 @@ function initCharts() {
     datasets: [{
       data: Array(chartDataPoints).fill(0),
       fill: true,
-      backgroundColor: 'rgba(0, 255, 0, 0.1)'
+      backgroundColor: 'rgba(0, 255, 0, 0.2)' // More visible fill
     }]
   };
 
@@ -115,19 +113,32 @@ function updateMemoryStatus() {
   }
 }
 
-function setupInputHandlers() {
-  inp.addEventListener('input', function() {
-    this.style.height = 'auto';
-    this.style.height = Math.min(this.scrollHeight, 200) + 'px';
-    setChatEnabled(!!currentModel);
-  });
-  inp.addEventListener('keydown', function(e) {
+function createNewTerminalInput() {
+  const terminalLine = document.createElement('div');
+  terminalLine.className = 'terminal-input-line';
+
+  const input = document.createElement('input');
+  input.type = 'text';
+  input.className = 'terminal-input';
+  input.id = 'inp'; // Keep id for focusing
+  input.placeholder = currentModel ? `Chat with ${currentModel}...` : 'Select a model to start chatting...';
+  input.disabled = !currentModel;
+
+  const cursor = document.createElement('span');
+  cursor.className = 'terminal-cursor';
+
+  terminalLine.appendChild(input);
+  terminalLine.appendChild(cursor);
+  msgs.appendChild(terminalLine);
+
+  input.focus();
+
+  input.addEventListener('keydown', function(e) {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
-      btn.click();
+      sendMessage();
     }
   });
-  btn.addEventListener('click', sendMessage);
 }
 
 function toggleTheme() {
@@ -443,33 +454,31 @@ async function loadModels() {
 modelSel.addEventListener('change', function() {
   if (this.value === 'download') {
     this.value = ''; // Reset selection
-    // Add a timestamp parameter to prevent caching
     window.location.href = `dl.php?t=${Date.now()}`; 
     return;
   }
   currentModel = this.value;
-  setChatEnabled(!!currentModel);
-  if (currentModel) {
-    inp.placeholder = `Chat with ${currentModel}...`;
-  } else {
-    inp.placeholder = 'Select a model to start chatting...';
+  const currentInput = document.getElementById('inp');
+  if (currentInput) {
+    currentInput.disabled = !currentModel;
+    currentInput.placeholder = currentModel ? `Chat with ${currentModel}...` : 'Select a model to start chatting...';
+    currentInput.focus();
   }
 });
 
-function setChatEnabled(enabled) {
-  const hasText = inp.value.trim().length > 0;
-  inp.disabled = !enabled;
-  btn.disabled = !enabled || !hasText || isTyping;
-}
-
 async function sendMessage() {
-  const text = inp.value.trim();
+  const inputElement = document.getElementById('inp');
+  if (!inputElement) return;
+
+  const text = inputElement.value.trim();
   if (!text || !currentModel || isTyping) return;
+
+  // Convert the input line to a static message
+  const terminalLine = inputElement.parentElement;
+  terminalLine.remove();
   appendMessage('user', text);
+
   currentChat.push({ role: 'user', content: text });
-  inp.value = '';
-  inp.style.height = 'auto';
-  setChatEnabled(!!currentModel);
   
   // Create empty assistant message for live streaming
   currentStreamingMessage = createStreamingMessage();
@@ -775,6 +784,8 @@ function finishStreamingMessage() {
   currentStreamingMessage = null;
   streamingContent = '';
   streamingThought = '';
+
+  createNewTerminalInput(); // Add new input line for the next command
 }
 
 function removeStreamingMessage() {

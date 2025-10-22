@@ -32,10 +32,17 @@ function getCpuCores() {
 
 
 function getMemoryUsage() {
-    // For Linux, parse /proc/meminfo
+    // Use `free` command on Linux, it's more reliable
+    $command = "free | grep Mem | awk '{print $3/$2 * 100.0}'";
+    $mem_load = @exec($command);
+
+    if ($mem_load !== false && is_numeric($mem_load)) {
+        return round((float)$mem_load, 2);
+    }
+
+    // Fallback to /proc/meminfo if `free` is not available or fails
     if (is_readable('/proc/meminfo')) {
         $meminfo_raw = file_get_contents('/proc/meminfo');
-        $meminfo = [];
         preg_match('/^MemTotal:\s+(\d+)\s*kB/', $meminfo_raw, $matches_total);
         preg_match('/^MemAvailable:\s+(\d+)\s*kB/', $meminfo_raw, $matches_avail);
 
@@ -48,7 +55,7 @@ function getMemoryUsage() {
         }
     }
 
-    // Fallback for other systems (e.g., macOS with `vm_stat`)
+    // Fallback for macOS
     if (PHP_OS_FAMILY === 'Darwin') {
         $command = "vm_stat | grep -E 'Pages free|Pages active|Pages inactive|Pages speculative|Pages wired down' | awk '{print $3}' | sed 's/\\.//'";
         $vm_stat = @exec($command, $output);
